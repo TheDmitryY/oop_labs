@@ -6,6 +6,7 @@
 #include "lab5_templates.h"
 #include "personnel_system.h"
 #include "project_management.h"
+#include "stl_lab.h"
 
 namespace {
 void ClearInput() {
@@ -107,8 +108,8 @@ int main() {
         << "\n1 Додати до статичного  2 Додати до динамічного  3 Видалити зі "
            "статичного\n"
         << "4 Видалити з динамічного  5 Показати сховища  6 Зберегти обидва\n"
-        << "7 Завантажити обидва  8 Поліморфізм  9 Винятки  10 Лабораторна 5  "
-           "0 Вихід\nВибір: ";
+        << "7 Завантажити обидва  8 Поліморфізм  9 Винятки  10 Лабораторна 5\n"
+        << "11 STL-контейнери та функтори  0 Вихід\nВибір: ";
     if (!(std::cin >> choice)) {
       ClearInput();
       std::cout << "Некоректний вибір.\n";
@@ -146,6 +147,8 @@ int main() {
         DemonstrateExceptions();
       else if (choice == 10)
         DemonstrateLab5();
+      else if (choice == 11)
+        DemonstrateStlContainers();
       else if (choice != 0)
         std::cout << "Немає такого пункту.\n";
     } catch (const PersonnelException &error) {
