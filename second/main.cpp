@@ -1,222 +1,211 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <string>
 
+#include "project_hierarchy.h"
 #include "project_management.h"
 
 using namespace std;
 
-static Worker static_worker1(101, "Андрій Шевченко", "Lead Architect", 10, 55.0,
-                             45, 15000.0, 95);
-static Worker static_worker2(102, "Марія Бондаренко", "Senior QA Engineer", 6,
-                             35.0, 30, 8000.0, 90);
-static Project static_project1(1, "Корпоративний портал", "SoftServe", 60,
-                               100000.0, 20000.0, 8, static_worker1);
-static Project static_project2(2, "Мобільний банкінг", "Monobank", 90, 150000.0,
-                               40000.0, 12, static_worker2);
-static Project static_project3(3, "Хмарна безпека", "CyberDefense", 45, 75000.0,
-                               15000.0, 6, static_worker1);
+static Worker g_static_worker(101, "Андрій Шевченко", "Lead Architect", 10,
+                              55.0, 45, 15000.0, 95);
+static Project g_static_project(1, "Корпоративний портал", "SoftServe", 60,
+                                100000.0, 20000.0, 8, g_static_worker);
 
 int main() {
   srand(static_cast<unsigned int>(time(nullptr)));
 
-  cout << ">>> [Пункт 6] Створення 5 об'єктів у динамічній пам'яті <<<\n";
-  Worker* dyn_worker1 = new Worker(201, "Олег Мельник", "DevOps Engineer", 5,
-                                   42.0, 28, 7000.0, 88);
-  Worker* dyn_worker2 = new Worker(202, "Ірина Ковальчук", "Frontend Developer",
-                                   3, 30.0, 19, 4500.0, 84);
-  Project* dyn_project1 =
-      new Project(10, "CRM Система логістики", "GlobalLogistics", 120, 180000.0,
-                  35000.0, 15, *dyn_worker1);
-  Project* dyn_project2 =
-      new Project(11, "Платіжний мікросервіс", "FinTech Solutions", 75,
-                  120000.0, 25000.0, 10, *dyn_worker2);
-  Project* dyn_project3 =
-      new Project(12, "ШІ-Модуль прогнозування", "DataFuture", 150, 250000.0,
-                  60000.0, 20, *dyn_worker1);
-  cout << "5 об'єктів успішно виділено через оператор new.\n\n";
+  cout << "=========================================================\n";
+  cout << "ЧАСТИНА 1. БАЗОВИЙ ФУНКЦІОНАЛ СИСТЕМИ (ЛАБОРАТОРНА РОБОТА 3)\n";
+  cout << "=========================================================\n\n";
 
- 
-  cout << ">>> [Пункт 7] Визначення 2 масивів об'єктів <<<\n";
-  const int kWorkerCount = 3;
-  Worker workers_array[kWorkerCount] = {
-      Worker(301, "Василь Сидоренко", "Backend Developer", 4, 32.0, 22, 5000.0,
-             85),
-      Worker(302, "Олена Ткаченко", "UI/UX Designer", 3, 28.0, 16, 4000.0, 82),
-      Worker(303, "Дмитро Гриценко", "Project Manager", 8, 48.0, 42, 10000.0,
-             93)};
+  cout << ">>> 1. Статичні елементи класу <<<\n";
+  Worker::PrintTotalWorkersCount();
+  Project::PrintTotalProjectsCount();
+  cout << "Поточна кількість робітників через статичний метод: "
+       << Worker::GetTotalWorkersCount() << "\n\n";
 
-  const int kProjectCount = 3;
-  Project projects_array[kProjectCount] = {
-      Project(21, "E-Commerce Платформа", "Rozetka", 100, 160000.0, 45000.0, 14,
-              workers_array[2]),
-      Project(22, "Логістичний трекер", "Nova Poshta", 80, 110000.0, 30000.0, 9,
-              workers_array[0]),
-      Project(23, "Дизайн-система бренду", "Prom UA", 40, 40000.0, 12000.0, 5,
-              workers_array[1])};
-  cout << "Масив 1: " << kWorkerCount << " робітників.\n";
-  cout << "Масив 2: " << kProjectCount << " проєктів.\n\n";
-  cout << ">>> [Пункт 8] Демонстрація роботи з об'єктами масивів <<<\n";
-  cout << "\n--- Робота з масивом робітників (workers_array) ---\n";
-  for (int i = 0; i < kWorkerCount; ++i) {
-    workers_array[i].PrintInfo();
-    double salary = workers_array[i].CalculateSalary(160);
-    cout << "  Розрахована зарплата за 160 год: " << salary << " $\n";
-    workers_array[i].CompleteTasks();
-    cout << "\n";
-  }
+  cout << ">>> 2. Робота конструкторів базових класів <<<\n";
+  Worker default_worker;
+  Project default_project;
+  default_worker.PrintInfo();
+  default_project.PrintInfo();
 
-  cout << "--- Робота з масивом проєктів (projects_array) ---\n";
-  for (int i = 0; i < kProjectCount; ++i) {
-    projects_array[i].PrintInfo();
-    projects_array[i].AddResources(2);
-    projects_array[i].AssignBudgetToLead(3000.0);
-    cout << "  Залишок бюджету: " << projects_array[i].GetRemainingBudget()
-              << " грн\n\n";
-  }
-  cout
-      << ">>> [Пункт 9] Демонстрація роботи УСІХ методів обох класів <<<\n";
+  string engineering_dept = "Департамент розробки ПЗ";
+  Worker param_worker(201, "Олексій Коваленко", "Senior Backend Dev", 6, 45.0,
+                      34, 12000.0, 92, 9001, engineering_dept);
+  param_worker.PrintInfo();
 
-  cout << "\n--- [Клас Worker: Демонстрація методів] ---\n";
-  Worker test_worker(401, "Сергій Кравченко", "Middle C++ Dev", 3, 25.0, 10,
-                     2000.0, 80);
-  test_worker.PrintInfo();
+  ProjectModule composite_module("Платіжний шлюз API", 3, 18000.0);
+  Project param_project(10, "Фінтех Екосистема", "PrivatBank", 120, 250000.0,
+                        40000.0, 12, param_worker, 8001, composite_module);
+  param_project.PrintInfo();
 
-  cout << "\n1) Worker::CalculateSalary(160):\n";
-  cout << "Зарплата Сергія за 160 годин: "
-            << test_worker.CalculateSalary(160) << " $\n";
+  Worker copy_worker(param_worker);
+  Project copy_project(param_project);
 
-  cout << "\n2) Worker::CompleteTasks() [перевантажений 1]:\n";
-  test_worker.CompleteTasks();
+  cout << "\n>>> 3. Способи створення об'єктів <<<\n";
+  Worker worker_simple(301, "Максим Ткач", "QA Automation", 4, 32.0, 25, 6000.0,
+                       86, 9002, engineering_dept);
+  Worker worker_explicit = Worker(302, "Юлія Бойко", "UI/UX Designer", 5, 35.0,
+                                  28, 7500.0, 89, 9003, engineering_dept);
+  Worker worker_short = string("Роман Василенко");
 
-  cout << "\n3) Worker::CompleteTasks(4, 500.0) [перевантажений 2]:\n";
-  test_worker.CompleteTasks(4, 500.0);
+  CalculateWorkerEfficiency(param_worker);
+  CalculateWorkerEfficiency(&param_worker);
 
-  cout << "\n4) Worker::AllocateBudget(1500.0):\n";
-  test_worker.AllocateBudget(1500.0);
+  cout << "\n>>> 4. Взаємодія за композицією та агрегацією <<<\n";
+  Department security_dept("Департамент кібербезпеки", &param_worker);
+  security_dept.ConductDepartmentSprint(4, 8000.0);
 
-  cout << "\n5) Worker::CompareExperience (приймає об'єкт класу):\n";
-  bool more_exp = test_worker.CompareExperience(static_worker1);
-  cout << "Чи має Сергій більший або рівний досвід за Андрія? "
-            << (more_exp ? "Так" : "Ні") << "\n";
+  param_project.DeliverCurrentModule(50);
 
-  cout << "\n6) Worker::CreatePromotedWorker (повертає об'єкт класу):\n";
-  Worker promoted_worker =
-      test_worker.CreatePromotedWorker("Senior C++ Dev", 15.0);
-  promoted_worker.PrintInfo();
+  TaskAssignment assignment(
+      &param_worker, &worker_simple, &param_project,
+      "Розробка протоколу двофакторної автентифікації", 60, 22000.0);
+  assignment.ExecuteAssignment();
 
-  cout << "\n7) Worker::SaveToFile та Worker::LoadFromFile:\n";
-  test_worker.SaveToFile("test_worker.txt");
-  cout << "Дані Сергія записано у файл 'test_worker.txt'.\n";
-
+  param_worker.SaveToFile("test_worker.txt");
   Worker loaded_worker;
   loaded_worker.LoadFromFile("test_worker.txt");
-  cout << "Зчитано дані робітника з файлу 'test_worker.txt':\n";
-  loaded_worker.PrintInfo();
 
-  cout << "\n8) Worker::AllocateAndSortMemory [Пункт 12]:\n";
-  test_worker.AllocateAndSortMemory();
-
-  cout << "\n--- [Клас Project: Демонстрація методів] ---\n";
-  Project test_project(50, "Інтернет-магазин запчастин", "AutoParts Ltd", 60,
-                       80000.0, 10000.0, 4, test_worker);
-  test_project.PrintInfo();
-
-  cout << "\n1) Project::GetRemainingBudget():\n";
-  cout << "Залишок бюджету проєкту: " << test_project.GetRemainingBudget()
-            << " грн\n";
-
-  cout << "\n2) Project::AddResources(3) [перевантажений 1]:\n";
-  test_project.AddResources(3);
-
-  cout << "\n3) Project::AddResources(2, 4500.0) [перевантажений 2]:\n";
-  test_project.AddResources(2, 4500.0);
-
-  cout << "\n4) Project::AssignBudgetToLead(6000.0):\n";
-  test_project.AssignBudgetToLead(6000.0);
-
-  cout << "\n5) Project::MergeProject (приймає об'єкт класу):\n";
-  Project secondary_project(51, "Модуль складського обліку", "AutoParts Ltd",
-                            30, 25000.0, 5000.0, 2, static_worker2);
-  test_project.MergeProject(secondary_project);
-
-  cout << "\n6) Project::CreateSubproject (повертає об'єкт класу):\n";
-  Project sub_proj =
-      test_project.CreateSubproject("Підсистема онлайн-оплати", 15000.0);
-  sub_proj.PrintInfo();
-
-  cout << "\n7) Project::SaveToFile та Project::LoadFromFile:\n";
-  test_project.SaveToFile("test_project.txt");
-  cout << "Дані проєкту записано у файл 'test_project.txt'.\n";
-
+  param_project.SaveToFile("test_project.txt");
   Project loaded_project;
   loaded_project.LoadFromFile("test_project.txt");
-  cout << "Зчитано дані проєкту з файлу 'test_project.txt':\n";
-  loaded_project.PrintInfo();
 
-  cout << "\n8) Project::AllocateAndSortMemory [Пункт 12]:\n";
-  test_project.AllocateAndSortMemory();
+  cout << "\n=========================================================\n";
+  cout << "ЧАСТИНА 2. НОВИЙ ФУНКЦІОНАЛ: СПАДКУВАННЯ ТА ІЄРАРХІЯ КЛАСІВ\n";
+  cout << "ТРЕТІЙ РІВЕНЬ СКЛАДНОСТІ (ПУНКТИ 1 - 9 ЗАВДАННЯ)\n";
+  cout << "=========================================================\n\n";
 
-  cout << "\n>>> [Пункт 10] Сценарій взаємодії двох об'єктів (Project & "
-               "Worker) <<<\n";
-  cout << "Сценарій: Замовник 'Fintech Ukraine' замовляє розробку "
-               "платіжного шлюзу.\n";
-  cout
-      << "Менеджер призначає провідного розробника та розпочинає роботу.\n";
+  cout << ">>> ПУНКТ 1 ТА 5: Ієрархія класів (>= 8 полів на клас) та передача >= 5 аргументів конструктору базового класу <<<\n";
+  SoftwareDeveloper dev1(
+      701, "Дмитро Мельник", "Senior C++ Developer", 5, 42.0,
+      "C++20 / STL / Boost", "CLion & Neovim", 8, 54, 88.5, true, 340, "feature/security-layer");
+  dev1.PrintDeveloperDetails();
 
-  Worker lead_dev(601, "Ярослав Мудрий", "Lead Software Architect", 9, 60.0, 50,
-                  0.0, 95);
-  Project client_project(100, "Національний платіжний шлюз", "Fintech Ukraine",
-                         90, 200000.0, 0.0, 10, lead_dev);
+  cout << "\n>>> ПУНКТ 2: Керування доступом до 3 методів та 3 даних базового класу (public, protected, private) <<<\n";
+  cout << "--- 2.1 Публічне наслідування (SoftwareDeveloper : public Worker) ---\n";
+  dev1.DemonstrateAccessControl();
 
-  cout << "\nПочатковий стан проєкту та відповідального робітника:\n";
-  client_project.PrintInfo();
+  cout << "\n--- 2.2 Захищене наслідування (ProjectSupervisor : protected Worker) ---\n";
+  ProjectSupervisor supervisor1(
+      801, "Валерій Сидоренко", "Project Supervisor", 9, 58.0,
+      "Enterprise Banking Systems", 4, 75000.0, 7, 95.0, true, 12, "Київ, Офіс А");
+  supervisor1.PrintSupervisorInfo();
+  supervisor1.ConductSupervisorInspection();
+  supervisor1.DemonstrateProtectedInheritance();
 
-  cout << "\n--- Етап 1: Виконання першого спринту розробки ---\n";
-  client_project.ExecuteSprint(6, 35000.0);
+  cout << "\n>>> ПУНКТ 3: Додатковий похідний клас із закритим (private) наслідуванням та оперуванням методами різних класів <<<\n";
+  SecurityAuditor auditor1(
+      901, "Олександр Шевчук", "Lead Security Auditor", 8, 65.0,
+      "AUD-CERT-9941", "ISO/IEC 27001 & SOC2", 14, 96.8, true, 28, 85000.0, "State Cyber Defense");
+  auditor1.PrintAuditSummary();
+  auditor1.DemonstratePrivateInheritanceAccess();
 
-  cout << "\n--- Етап 2: Додаткові ресурси (сервери та сертифікати) ---\n";
-  client_project.AddResources(3, 12000.0);
+  cout << "\n--- Виклик методу, де об'єкт аудитора оперує методами різних класів ієрархії ---\n";
+  auditor1.PerformFullSystemAudit(&param_project, &dev1, &supervisor1);
 
-  cout
-      << "\n--- Етап 3: Виконання другого спринту тестування та деплою ---\n";
-  client_project.ExecuteSprint(8, 40000.0);
+  cout << ">>> ПУНКТ 4: 3 додаткових класи для множинного наслідування та побудова відповідних об'єктів <<<\n";
+  cout << "Клас 1: SoftwareArchitect (похідний від SoftwareDeveloper, >= 8 полів)\n";
+  SoftwareArchitect architect1(
+      702, "Ірина Мороз", "Principal Solution Architect", 11, 70.0,
+      "C++ / Go / Python", "VS Code & Neovim", 15, 120, 93.0, true, 890, "architecture/core",
+      "Event-Driven Microservices", "AWS Multi-Region Kubernetes", 18, 10, 150000.0, true, 24, "BLPRNT-FIN-2026");
+  architect1.PrintArchitectDetails();
+  architect1.DesignSystemArchitecture("Розподілений процесинг транзакцій");
 
-  cout << "\nКінцевий стан проєкту після взаємодії:\n";
-  client_project.PrintInfo();
+  cout << "\nКлас 2: ProjectConsultant (доменний базовий клас, >= 8 полів)\n";
+  ProjectConsultant consultant1(
+      "Deloitte Strategy Advisory", "Cloud Infrastructure Cost & Risk", 12, 110.0, 32, 40.0, true, "STRAT-ROADMAP-Q4");
+  consultant1.PrintConsultantInfo();
+  consultant1.ProvideStrategicGuidance(&param_project);
 
-  cout
-      << "\n>>> [Пункт 11] Використання покажчиків на екземпляри класів <<<\n";
-  Worker* worker_pointer = &static_worker1;
-  cout << "Покажчик worker_pointer вказує на об'єкт static_worker1:\n";
-  cout << "  Ім'я робітника (через покажчик ->): " << worker_pointer->name
-            << "\n";
-  cout << "  Посада: " << worker_pointer->position << "\n";
-  worker_pointer->CompleteTasks(2, 400.0);
+  cout << "\nКлас 3: EngineeringDirector (Множинне наслідування від SoftwareArchitect та ProjectConsultant, >= 8 полів)\n";
+  EngineeringDirector director1(
+      703, "Ярослав Коваль", "VP of Engineering & Architecture", 14, 90.0,
+      "C++ / Rust / Distributed Systems", "Neovim", 20, 210, 95.5, true, 1400, "main",
+      "High-Load Reactive Architecture", "Hybrid Multi-Cloud AWS/GCP", 25, 10, 300000.0, true, 48, "BLPRNT-GLOBAL-01",
+      "Gartner Executive Consulting", "Enterprise Digital Transformation", 10, 130.0, 45, 50.0, false, "STRAT-BOARD-2026",
+      "Директорат стратегічних інженерних систем", 85, 2500000.0, 15, 96.5, true, 8, "Київ / Лондон");
+  director1.PrintDirectorSummary();
 
-  Project* project_pointer = dyn_project1;
-  cout << "\nПокажчик project_pointer вказує на dyn_project1:\n";
-  cout << "  Назва проєкту (через покажчик ->): " << project_pointer->title
-            << "\n";
-  cout << "  Залишок бюджету: " << project_pointer->GetRemainingBudget()
-            << " грн\n";
-  project_pointer->AddResources(2, 2500.0);
+  cout << "\n>>> ПУНКТ 6: Доступ до членів та методів базових класів через оператор :: та using <<<\n";
+  cout << "1) Доступ через using в SecurityAuditor (public-доступ до Worker::name): " << auditor1.name << "\n";
+  cout << "2) Доступ через using в SecurityAuditor (public-доступ до Worker::CalculateSalary): "
+       << auditor1.CalculateSalary(160) << " $\n";
+  cout << "3) Доступ через using в EngineeringDirector (PrintDeveloperDetails з SoftwareArchitect):\n";
+  director1.PrintDeveloperDetails();
+  cout << "4) Доступ через using в EngineeringDirector (PrintConsultantInfo з ProjectConsultant):\n";
+  director1.PrintConsultantInfo();
+  cout << "5) Прямий виклик методів базових класів з EngineeringDirector через ::\n";
+  director1.SoftwareArchitect::OptimizeCloudInfrastructure();
+  director1.ProjectConsultant::ProvideStrategicGuidance(&param_project);
 
-  cout << "\n>>> [Пункт 12] Додатковий метод: випадкова пам'ять та "
-               "сортування <<<\n";
-  cout << "Тест 1: Для Worker (поле productivity_score_):\n";
-  dyn_worker1->AllocateAndSortMemory();
+  cout << "\n>>> ПУНКТ 7 ТА 8: Порядок виклику конструкторів та деструкторів, відслідковування входження у блоки <<<\n";
+  cout << "--- 7.1 Демонстрація для простого наслідування (Worker -> SoftwareDeveloper) ---\n";
+  cout << "Точка ПЕРЕД входженням у локальний блок простого наслідування.\n";
+  {
+    cout << "  [Вхід у локальний блок 1]\n";
+    cout << "  Створення об'єкта SoftwareDeveloper dev_scope...\n";
+    SoftwareDeveloper dev_scope(
+        799, "Тимчасовий Тестувальник", "Junior Dev", 1, 20.0,
+        "C++", "VS Code", 2, 5, 75.0, false, 15, "test/scope");
+    cout << "  Об'єкт успішно створено. Виконання роботи всередині блоку:\n";
+    dev_scope.WriteCode(250);
+    dev_scope.RunUnitTests(10);
+    cout << "  [Вихід з локального блоку 1: деструктори викликаються у зворотному порядку...]\n";
+  }
+  cout << "Точка ПІСЛЯ виходу з локального блоку простого наслідування.\n\n";
 
-  cout << "\nТест 2: Для Project (поле deadline_days):\n";
-  dyn_project2->AllocateAndSortMemory();
+  cout << "--- 7.2 Демонстрація для множинного наслідування (SoftwareArchitect + ProjectConsultant -> EngineeringDirector) ---\n";
+  cout << "Точка ПЕРЕД входженням у локальний блок множинного наслідування.\n";
+  {
+    cout << "  [Вхід у локальний блок 2]\n";
+    cout << "  Створення об'єкта EngineeringDirector director_scope...\n";
+    EngineeringDirector director_scope(
+        788, "Олег Тимчасовий", "Interim Director", 10, 80.0,
+        "C++", "CLion", 5, 20, 85.0, true, 200, "temp/exec",
+        "SOA", "Azure", 6, 8, 80000.0, true, 10, "ARCH-TEMP",
+        "Temp Advisory", "Audit", 8, 90.0, 10, 20.0, true, "ROAD-TEMP",
+        "Тимчасовий департамент", 12, 400000.0, 3, 90.0, false, 2, "Львів");
+    cout << "  Об'єкт успішно створено всередині блоку.\n";
+    director_scope.AllocateStrategicBudget(50000.0);
+    cout << "  [Вихід з локального блоку 2: деструктори викликаються у зворотному порядку...]\n";
+  }
+  cout << "Точка ПІСЛЯ виходу з локального блоку множинного наслідування.\n\n";
 
-  delete dyn_worker1;
-  delete dyn_worker2;
-  delete dyn_project1;
-  delete dyn_project2;
-  delete dyn_project3;
-  cout << "\n[Завершення] Всі 5 динамічних об'єктів успішно звільнено "
-               "(delete).\n";
+  cout << ">>> ПУНКТ 9: Комплексний сценарій функціонування системи та взаємодії усіх об'єктів <<<\n";
+  cout << "Сценарій: Реалізація критичного релізу платіжної інфраструктури\n";
+  cout << "1. Директор інженерії відкриває стратегічний реліз:\n";
+  director1.ConductExecutiveReview(&param_project);
+  director1.AllocateStrategicBudget(100000.0);
+
+  cout << "2. Архітектор оптимізує хмарні мікросервіси та проєктує нові компоненти:\n";
+  architect1.DesignSystemArchitecture("Модуль високошвидкісного криптографічного клірингу");
+  architect1.OptimizeCloudInfrastructure();
+
+  cout << "3. Розробник пише код та запускає unit-тести для проєкту:\n";
+  dev1.WriteCode(650);
+  dev1.RunUnitTests(25);
+  dev1.CommitCode("feat: integrate cryptographic hardware acceleration");
+
+  cout << "4. Керівник нагляду перевіряє прогрес та затверджує проміжну віху:\n";
+  supervisor1.ConductSupervisorInspection();
+  supervisor1.ApproveProjectMilestone("Етап 1: Криптографічний шлюз розгорнуто");
+
+  cout << "5. Незалежний аудитор безпеки проводить комплексну верифікацію системи:\n";
+  auditor1.PerformFullSystemAudit(&param_project, &dev1, &supervisor1);
+
+  cout << "6. Завершення спринту проєкту:\n";
+  param_project.DeliverCurrentModule(30);
+  cout << "Підсумковий залишок бюджету проєкту \"" << param_project.title << "\": "
+       << param_project.GetRemainingBudget() << " грн\n";
+
+  cout << "\n=========================================================\n";
+  cout << "ЗАВЕРШЕННЯ ПРОГРАМИ (ВИКЛИК ДЕСТРУКТОРІВ СТЕКОВИХ ОБ'ЄКТІВ)\n";
+  cout << "=========================================================\n";
 
   return 0;
 }
