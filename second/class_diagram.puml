@@ -1,0 +1,48 @@
+@startuml
+abstract class Employee {
+  - id_ : int
+  - name_ : string
+  - salary_ : double
+  + Work() : void
+  + Print(out) : void
+  + Read(in) : void
+  + Write(out) : void
+}
+
+class Developer {
+  - language_ : string
+  - completed_features_ : int
+}
+
+class Tester {
+  - testing_tool_ : string
+  - found_bugs_ : int
+}
+
+class Manager {
+  - department_ : string
+  - team_size_ : int
+}
+
+class ServiceStatic {
+  - employees_ : array<Employee>
+  + Add(employee)
+  + RemoveById(id)
+  + Read(employee, filename)
+  + Write(employee, filename)
+}
+
+class ServiceDynamic {
+  - employees_ : vector<Employee>
+  + Add(employee)
+  + RemoveById(id)
+  + Read(employee, filename)
+  + Write(employee, filename)
+}
+
+Employee <|-- Developer
+Employee <|-- Tester
+Employee <|-- Manager
+ServiceStatic o-- Employee
+ServiceDynamic o-- Employee
+@enduml

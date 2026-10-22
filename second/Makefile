@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra
 TARGET = main
-SRCS = main.cpp department.cpp project.cpp project_module.cpp task_assignment.cpp worker.cpp
+SRCS = main.cpp department.cpp project.cpp project_module.cpp task_assignment.cpp worker.cpp personnel_system.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(TARGET)
